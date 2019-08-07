@@ -67,6 +67,7 @@ class GamePage extends Component {
         this.gameSessionSubscription = this.stompClient.subscribe("/topic/" + this.state.gameSession.gameId, (data) => {
             if (JSON.parse(data.body).messageType === "GAMESESSION") {
                 let gamesSession = JSON.parse(data.body)
+                console.log(gamesSession)
                 if (gamesSession.gameState === "ENDED") {
                     if (gamesSession.winner === null) {
                         this.winner = null;
