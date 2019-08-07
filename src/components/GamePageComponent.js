@@ -20,7 +20,7 @@ class GamePage extends Component {
 
     createStompClient() {
         if (!this.state.connected) {
-            this.stompClient = Stomp.client("ws://localhost:8080/ticTacToe");
+            this.stompClient = Stomp.client("wss://tic-tac-toe-be.herokuapp.com/ticTacToe");
             this.connect()
         }
     }
