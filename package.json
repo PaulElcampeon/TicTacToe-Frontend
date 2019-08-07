@@ -2,6 +2,9 @@
   "name": "tictactoe-frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "@stomp/stompjs": "^5.4.2",
     "react": "^16.8.6",
