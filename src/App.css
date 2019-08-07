@@ -1,0 +1,99 @@
+body {
+  margin: 0%;
+  padding: 0%;
+  height: 100%;
+  background-color: black;
+  text-align: center;
+}
+
+.mainDiv {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.boardDiv {
+  width: 60vw;
+  height:50vw;
+}
+
+.boarderthickness {
+  border-style: solid;
+  border-width: thick
+}
+
+.textMiddle {
+  height: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.blockProp {
+  top: 50%;               
+}
+
+.asd {
+
+    vertical-align: middle
+
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btnCs {
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  background-color: black;
+  color: White;
+  border: 2px solid White;
+}
+
+.btnCs:hover {
+  background-color: white; /* Green */
+  color: black;
+}
+
+
+.btnTextSize {
+  font-size:3vw;
+}
+
+.titleTextSize {
+  font-size:5vw;
+}
+
+.waitingTextSize {
+  font-size:3vw;
+}
+
+.specialFont {
+  font-family: 'Press Start 2P', cursive;
+}
+
+
+@media only screen and (max-width: 900px) {
+
+  .btnTextSize {
+    font-size:4vw;
+  }
+  
+  .titleTextSize {
+    font-size:7vw;
+  }
+}
+
+@media only screen and (max-width: 660px) {
+
+  .btnTextSize {
+    font-size:4vw;
+  }
+  
+}
