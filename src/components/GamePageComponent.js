@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../App.css';
 import WaitingScreen from '../components/WaitingScreen'
 import BoardComponent from '../components/BoardComponent'
-var Stomp = require('stompjs');
+import { Client } from '@stomp/stompjs';
 
 class GamePage extends Component {
     constructor() {
@@ -20,17 +20,22 @@ class GamePage extends Component {
 
     createStompClient() {
         if (!this.state.connected) {
-            this.stompClient = Stomp.client("wss://tic-tac-toe-be.herokuapp.com/ticTacToe");
+            this.stompClient = new Client({
+                brokerURL: "wss://tic-tac-toe-be.herokuapp.com/ticTacToe",
+                debug: (str) => {
+                    //do nothing
+                    // console.log(str);
+                }
+            });
             this.connect()
         }
     }
 
     connect() {
-        this.stompClient.debug = true;
-        this.stompClient.connect({}, (frame) => {
+        this.stompClient.onConnect = (frame) => {
             this.name = frame.headers.name;
-            
-            this.stompClient.subscribe("/queue/" + this.name, (data) => {
+
+            this.privateSubscription = this.stompClient.subscribe("/queue/" + this.name, (data) => {
                 this.setGameSessionToState(JSON.parse(data.body))
                 if (this.gameSessionSubscription !== null) {
                     this.gameSessionSubscription.unsubscribe()
@@ -38,11 +43,24 @@ class GamePage extends Component {
                 } else {
                     this.subscribeToNewGameSession()
                 }
+                data.ack();
             });
-            
             this.joinGame()
             this.setConnectedState(true)
-        });
+            // Do something, all subscribes must be done is this callback
+            // This is needed because this will be executed after a (re)connect
+        };
+
+        this.stompClient.onStompError = function (frame) {
+            // Will be invoked in case of error encountered at Broker
+            // Bad login/passcode typically will cause an error
+            // Complaint brokers will set `message` header with a brief message. Body may contain details.
+            // Compliant brokers will terminate the connection after any error
+            console.log('Broker reported error: ' + frame.headers['message']);
+            console.log('Additional details: ' + frame.body);
+        };
+
+        this.stompClient.activate();
     }
 
     subscribeToNewGameSession = () => {
@@ -71,7 +89,7 @@ class GamePage extends Component {
     }
 
     joinGame = () => {
-        this.stompClient.send("/app/join", {}, JSON.stringify({ playerName: this.name }))
+        this.stompClient.publish({destination:"/app/join", body:JSON.stringify({ playerName: this.name })})
     }
 
     showLoading = () => {
@@ -91,7 +109,7 @@ class GamePage extends Component {
     }
 
     sendBoardAction = (action) => {
-        this.stompClient.send("/app/act/" + this.state.gameSession.gameId, {}, JSON.stringify(action))
+        this.stompClient.publish({destination:"/app/act/" + this.state.gameSession.gameId, body:JSON.stringify(action)})
     }
 
     winnerMessage = () => {
@@ -163,7 +181,7 @@ class GamePage extends Component {
             connected: state
         })
     }
-    
+
     render() {
         return (
             <div className="text-white mainDiv">
