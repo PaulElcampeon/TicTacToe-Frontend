@@ -25,7 +25,7 @@ class GamePage extends Component {
                 brokerURL: "wss://tic-tac-toe-be.herokuapp.com/ticTacToe",
                 debug: (str) => {
                     //do nothing
-                    console.log(str);
+                    // console.log(str);
                 }
             });
 
