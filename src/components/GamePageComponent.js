@@ -4,6 +4,7 @@ import WaitingScreen from '../components/WaitingScreen'
 import BoardComponent from '../components/BoardComponent'
 import { Client } from '@stomp/stompjs';
 
+
 class GamePage extends Component {
     constructor() {
         super()
@@ -24,9 +25,10 @@ class GamePage extends Component {
                 brokerURL: "wss://tic-tac-toe-be.herokuapp.com/ticTacToe",
                 debug: (str) => {
                     //do nothing
-                    // console.log(str);
+                    console.log(str);
                 }
             });
+
             this.connect()
         }
     }
@@ -46,6 +48,7 @@ class GamePage extends Component {
                 data.ack();
             });
             this.joinGame()
+            this.startAutomatedMessages()
             this.setConnectedState(true)
             // Do something, all subscribes must be done is this callback
             // This is needed because this will be executed after a (re)connect
@@ -181,6 +184,17 @@ class GamePage extends Component {
         this.setState({
             connected: state
         })
+    }
+
+    //Due to heroku routers closing connections that have been idle for 55 seconds or more
+    startAutomatedMessages = () => {
+        this.myInterval = setInterval(() => {
+            this.stompClient.publish({destination:"/topic/empty", body:""})
+        },50000)
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.myInterval)
     }
 
     render() {
