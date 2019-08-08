@@ -21,10 +21,10 @@ class GamePage extends Component {
     createStompClient() {
         if (!this.state.connected) {
             this.stompClient = new Client({
-                brokerURL: "wss://tic-tac-toe-be.herokuapp.com/ticTacToe",
+                brokerURL: "ws://localhost:8080/ticTacToe",
                 debug: (str) => {
                     //do nothing
-                    // console.log(str);
+                    console.log(str);
                 }
             });
             this.connect()
