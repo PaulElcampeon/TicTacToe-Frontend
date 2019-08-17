@@ -25,7 +25,7 @@ class HomePage extends Component {
 
   wakeUpBackEnd = () => {
     fetch('https://tic-tac-toe-be.herokuapp.com')
-      .then((res) => { return res.json() })
+      .then((res) => { return res.text() })
       .then((data) => {
         console.log(data);
       })
