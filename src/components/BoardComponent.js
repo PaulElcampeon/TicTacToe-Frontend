@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import '../App.css';
+import GameInfo from './GameInfo';
 
 
 const blockPos = (xPos, yPos) => {
@@ -16,6 +17,20 @@ class BoardComponent extends Component {
         }
     }
 
+    componentDidMount() {
+        this.canvas = this.refs.canvas
+        this.ctx = this.canvas.getContext("2d")
+        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+        this.mounted = true
+        this.renderBoard()
+        this.handleResize();
+        window.addEventListener('resize', this.handleResize)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.handleResize)
+    }
+
     renderCorrectSign(sign) {
         if (sign === "EMPTY") {
             return ""
@@ -29,7 +44,7 @@ class BoardComponent extends Component {
     renderBoard = () => {
         if (this.mounted) {
             this.sortOutBoardSize()
-            this.canvas.removeEventListener('click', this.clicky)
+            this.canvas.removeEventListener('click', this.clickOnBoardSpace)
             this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             this.props.board.blocks.forEach((block, index) => {
                 this.ctx.beginPath();
@@ -47,12 +62,12 @@ class BoardComponent extends Component {
                 this.ctx.fillText(this.renderCorrectSign(block.blockState), (this.blockPositions[index].x + this.blockWidth / 2), (this.blockPositions[index].y + this.blockHeight / 2));
             });
 
-            this.canvas.addEventListener('click', this.clicky)
+            this.canvas.addEventListener('click', this.clickOnBoardSpace)
 
         }
     }
 
-    clicky = (e) => {
+    clickOnBoardSpace = (e) => {
         this.props.board.blocks.forEach((block, index) => {
             if (e.offsetY > this.blockPositions[index].y && e.offsetY < this.blockPositions[index].y + this.blockHeight
                 && e.offsetX > this.blockPositions[index].x && e.offsetX < this.blockPositions[index].x + this.blockWidth
@@ -61,17 +76,7 @@ class BoardComponent extends Component {
             }
         })
     }
-
-    componentDidMount() {
-        this.canvas = this.refs.canvas
-        this.ctx = this.canvas.getContext("2d")
-        this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-        this.mounted = true
-        this.renderBoard()
-        this.handleResize();
-        window.addEventListener('resize', this.handleResize)
-    }
-
+    
     handleResize = () => this.setState({
         windowHeight: window.innerHeight,
         windowWidth: window.innerWidth
@@ -99,28 +104,22 @@ class BoardComponent extends Component {
         return size > 630? 550 : size
     }
 
-
-    componentWillUnmount() {
-        window.removeEventListener('resize', this.handleResize)
-    }
-
-
     getWhosTurn = () => {
         return this.props.whosTurn === this.props.name ? "Your Turn" : "Opponents Turn"
     }
 
-    gameInformation = () => {
-        return (
-            <h1 className="text-white text-center mb-5 pb-5 titleTextSize specialFont">
-                {this.getWhosTurn()}
-            </h1>
-        )
-    }
+    // gameInformation = () => {
+    //     return (
+    //         <h1 className="text-white text-center mb-5 pb-5 titleTextSize specialFont">
+    //             {this.getWhosTurn()}
+    //         </h1>
+    //     )
+    // }
 
     render() {
         return (
             <div className="m-auto">
-                {this.gameInformation()}
+                <GameInfo info={getWhosTurn()}/>
                 <canvas ref="canvas" width={500} height={500} />
                 {this.renderBoard()}
             </div>

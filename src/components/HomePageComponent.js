@@ -11,6 +11,11 @@ class HomePage extends Component {
     }
   }
 
+  componentDidMount = () => {
+    console.log("Component did mount")
+    wakeUpBackEnd();
+  }
+
   setRedirect = () => {
     this.setState({
       redirect: true
@@ -25,17 +30,13 @@ class HomePage extends Component {
 
   wakeUpBackEnd = () => {
     fetch('https://tic-tac-toe-be.herokuapp.com')
-      .then((res) => { return res.text() })
-      .then((data) => {
-        console.log(data);
-      })
+      .then((res) => res.text())
+      .then((data) => console.log(data))
   }
 
   render() {
-
     return (
       <div className="text-white mainDiv">
-        {this.wakeUpBackEnd()}
         {this.renderRedirectToGamePage()}
         <h1 className="text-white mt-5 titleTextSize specialFont">Tic Tac Toe</h1>
         <button className="textSize btnCs m-auto p-4 btnTextSize specialFont" onClick={this.setRedirect}>PLAY</button>
